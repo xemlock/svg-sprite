@@ -13,8 +13,15 @@ node_js:
 after_script:
   - npm run coveralls
 
+before_install:
+  - echo $DROPBOX_UPLOADER_ENC | base64 --decode > .dropbox_uploader.enc
+  - wget https://raw.github.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh
+  - chmod +x dropbox_uploader.sh
+  - openssl aes-256-cbc -K $encrypted_65ea73ffebfb_key -iv $encrypted_65ea73ffebfb_iv -in .dropbox_uploader.enc -out ~/.dropbox_uploader -d
+
 after_failure:
-  - tar -cjf "svg-sprite_travis_${TRAVIS_BUILD_NUMBER}.tar.bz2" tmp && curl --ftp-create-dirs -T "svg-sprite_travis_${TRAVIS_BUILD_NUMBER}.tar.bz2" -u $FTP_USER:$FTP_PASSWORD "ftp://jkphl.is/${TRAVIS_REPO_SLUG}/svg-sprite_travis_${TRAVIS_BUILD_NUMBER}.tar.bz2"
+  - '[ -f ~/.dropbox_uploader ] && ./dropbox_uploader.sh upload tmp/ travis-artifacts/${TRAVIS_JOB_NUMBER}/'
+#   - tar -cjf "svg-sprite_travis_${TRAVIS_BUILD_NUMBER}.tar.bz2" tmp && curl --ftp-create-dirs -T "svg-sprite_travis_${TRAVIS_BUILD_NUMBER}.tar.bz2" -u $FTP_USER:$FTP_PASSWORD "ftp://jkphl.is/${TRAVIS_REPO_SLUG}/svg-sprite_travis_${TRAVIS_BUILD_NUMBER}.tar.bz2"
 
 matrix:
   fast_finish: true
