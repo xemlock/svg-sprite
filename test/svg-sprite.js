@@ -36,6 +36,10 @@ var cwdWeather = path.join(__dirname, 'fixture', 'svg', 'single'),
     cwdAlign = path.join(__dirname, 'fixture', 'svg', 'css'),
     dest = path.normalize(path.join(__dirname, '..', 'tmp'));
 
+function btoa(str) {
+    return Buffer.from(str).toString('base64');
+}
+
 /**
  * Add a bunch of SVG files
  *
@@ -140,6 +144,9 @@ function compareSvg2Png(svg, png, expected, diff, done, msg) {
                         expectedImage: expected,
                         diffImage: diff
                     }, function (err, imagesAreSame) {
+                        if (!imagesAreSame) {
+                            console.log('compareSvg2Png:\ncur:  ' + png + '\nref:  ' + expected + '\ndiff: ' + diff, imagesAreSame);
+                        }
                         should(err).not.ok;
                         should.ok(imagesAreSame, msg);
                         done();
@@ -615,6 +622,10 @@ describe('svg-sprite', function () {
                         expectedImage: path.join(__dirname, 'expected', 'png', 'css.vertical.centered.html.png'),
                         diffImage: path.join(__dirname, '..', 'tmp', 'css', 'png', 'css.centered.html.diff.png')
                     }, function (error, imagesAreSame) {
+                        if (!imagesAreSame) {
+                            console.log('compareSvg2Png(1):\ncur:  ' + png + '\nref:  ' + expected + '\ndiff: ' + diff, imagesAreSame);
+                            console.log('data:image/png,' + btoa(fs.readFileSync(previewImage)));
+                        }
                         should(error).not.ok;
                         should.ok(imagesAreSame, 'The generated CSS preview doesn\'t match the expected one!');
                         done();
@@ -694,6 +705,10 @@ describe('svg-sprite', function () {
                                 expectedImage: path.join(__dirname, 'expected', 'png', 'css.horizontal.centered.html.png'),
                                 diffImage: path.join(__dirname, '..', 'tmp', 'css', 'png', 'scss.horizontal.centered.html.diff.png')
                             }, function (error, imagesAreSame) {
+                                if (!imagesAreSame) {
+                                    console.log('compareSvg2Png(2):\ncur:  ' + png + '\nref:  ' + expected + '\ndiff: ' + diff, imagesAreSame);
+                                    console.log('data:image/png,' + btoa(fs.readFileSync(png)));
+                                }
                                 should(error).not.ok;
                                 should.ok(imagesAreSame, 'The generated Sass preview doesn\'t match the expected one!');
                                 done();
@@ -856,6 +871,10 @@ describe('svg-sprite', function () {
                         expectedImage: path.join(__dirname, 'expected', 'png', 'css.vertical.mixed.html.png'),
                         diffImage: path.join(__dirname, '..', 'tmp', 'view', 'png', 'css.mixed.html.diff.png')
                     }, function (error, imagesAreSame) {
+                        if (!imagesAreSame) {
+                            console.log('compareSvg2Png(4):\ncur:  ' + previewImage + '\nref:  ' + path.join(__dirname, 'expected', 'png', 'css.vertical.mixed.html.png') + '\ndiff: ' + path.join(__dirname, '..', 'tmp', 'view', 'png', 'css.mixed.html.diff.png'), imagesAreSame);
+                            console.log('data:image/png,' + btoa(fs.readFileSync(previewImage)));
+                        }
                         should(error).not.ok;
                         should.ok(imagesAreSame, 'The generated CSS preview doesn\'t match the expected one!');
                         done();
@@ -1021,6 +1040,9 @@ describe('svg-sprite', function () {
                                 expectedImage: path.join(__dirname, 'expected', 'png', 'css.packed.aligned.html.png'),
                                 diffImage: path.join(__dirname, '..', 'tmp', 'view', 'png', 'less.packed.mixed.html.diff.png')
                             }, function (error, imagesAreSame) {
+                                if (!imagesAreSame) {
+                                    console.log('compareSvg2Png:\ncur:  ' + previewImage + '\nref:  ' + path.join(__dirname, 'expected', 'png', 'css.packed.aligned.html.png') + '\ndiff: ' + path.join(__dirname, '..', 'tmp', 'view', 'png', 'less.packed.mixed.html.diff.png'), imagesAreSame);
+                                }
                                 should(error).not.ok;
                                 should.ok(imagesAreSame, 'The generated LESS preview doesn\'t match the expected one!');
                                 done();
